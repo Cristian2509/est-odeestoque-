@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt.br">
+    <head>
+        <meta charset="UTF=8">
+        <meta http-equiv="X=UA=compatible" content="IE=edge">
+        <meta name="vlewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de gerenciamento de estoque</title>
+    <style>
+        body {
+            background-color: #333;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #110458;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 200px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 5px 10px;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5 px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Sistema de gerenciamento de estoque</h1>
+        
+        <div id="loginPage">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <label for="username">Nome de usuário:</label>
+                <input type="text" id="username" required><br>
+                
+                <label for="password">Senha:</label>
+                <input type="password" id="password" required><br>
+                
+                <button type="button" onclick="login()">Entrar</button>
+            </form>
+        </div>
+        
+        <div id="stockPage" style="display: none;">
+            <form id="stockForm">
+                <label for="name">Nome do item:</label>
+                <input type="text" id="name" required><br>
+                
+                <label for="quantity">Quantidade do item:</label>
+                <input type="number" id="quantity" required><br>
+                
+                <label for="price">Preço do item:</label>
+                <input type="number" id="price" step="0.01" required><br>
+                
+                <button type="button" onclick="addItem()">Adicionar Item</button>
+                <button type="button" onclick="removeItem()">Remover Item</button>
+                <button type="button" onclick="displayStock()">Exibir Estoque</button>
+                <button type="button" onclick="searchItem()">Pesquisar Item</button>
+                <button type="button" onclick="logout()">Sair</button>
+            </form>
+
+            <table id="stockTable">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Quantidade</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody id="stockBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+   
+    <img src="C:\Users\User\Desktop\estoque-2.png"    alt="Descrição da imagem ">
+    <script>
+        var stock = [];
+        var stockTable = document.getElementById('stockTable');
+        var stockBody = document.getElementById('stockBody');
+        var loginPage = document.getElementById('loginPage');
+        var stockPage = document.getElementById('stockPage');
+        var usernameInput = document.getElementById('username');
+        var passwordInput = document.getElementById('password');
+
+        function login() {
+            var username = usernameInput.value;
+            var password = passwordInput.value;
+            // Aqui você pode verificar as credenciais fornecidas pelo usuário
+            // e permitir o acesso somente se forem válidas.
+            // Exemplo simples de autenticação:
+            if (username === 'admin' && password === 'senha123') {
+                loginPage.style.display = 'none';
+                stockPage.style.display = 'block';
+            } else {
+                alert("Nome de usuário ou senha incorretos");
+            }
+            document.getElementById('loginForm').reset();
+        }
+        
+        function logout() {
+            stockPage.style.display = 'none';
+            loginPage.style.display = 'block';
+            document.getElementById('stockForm').reset();
+        }
+
+        function addItem() {
+            var item = {
+                name: document.getElementById('name').value,
+                quantity: parseInt(document.getElementById('quantity').value),
+                price: parseFloat(document.getElementById('price').value)
+            };
+            stock.push(item);
+            document.getElementById('stockForm').reset();
+        }
+
+        function removeItem() {
+            var name = document.getElementById('name').value;
+            var index = -1;
+            for (var i = 0; i < stock.length; i++) {
+                if (stock[i].name === name) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index === -1) {
+                alert("Erro: Item não encontrado");
+                return;
+            }
+            stock.splice(index, 1);
+            document.getElementById('stockForm').reset();
+        }
+
+        function displayStock() {
+            stockBody.innerHTML = "";
+            for (var i = 0; i < stock.length; i++) {
+                var row = stockBody.insertRow();
+                var nameCell = row.insertCell();
+                nameCell.textContent = stock[i].name;
+                var quantityCell = row.insertCell();
+                quantityCell.textContent = stock[i].quantity;
+                var priceCell = row.insertCell();
+                priceCell.textContent = stock[i].price.toFixed(2);
+            }
+        }
+
+        function searchItem() {
+            var searchName = document.getElementById('name').value;
+            var found = false;
+            for (var i = 0; i < stock.length; i++) {
+                if (stock[i].name === searchName) {
+                    alert("Item encontrado:\n\nNome: " + stock[i].name + "\nQuantidade: " + stock[i].quantity + "\nPreço: " + stock[i].price.toFixed(2));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                alert("Item não encontrado.");
+            }
+            document.getElementById('stockForm').reset();
+        }
+    </script>
+</body>
+</html>
